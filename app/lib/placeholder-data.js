@@ -7,7 +7,7 @@ const users = [
     email: 'user@nextmail.com',
     password: '123456',
   },
-];
+]
 
 const customers = [
   {
@@ -61,16 +61,16 @@ const customers = [
   {
     id: 'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
     name: 'Amy Burns',
-    email: 'amy@burns.com',
+    email: 'amy.burns@vercel.com',
     image_url: '/customers/amy-burns.png',
   },
   {
     id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
     name: 'Balazs Orban',
-    email: 'balazs@orban.com',
+    email: 'balazs.orban@vercel.com',
     image_url: '/customers/balazs-orban.png',
   },
-];
+]
 
 const invoices = [
   {
@@ -163,7 +163,7 @@ const invoices = [
     status: 'paid',
     date: '2022-06-05',
   },
-];
+]
 
 const revenue = [
   { month: 'Jan', revenue: 2000 },
@@ -178,11 +178,11 @@ const revenue = [
   { month: 'Oct', revenue: 2800 },
   { month: 'Nov', revenue: 3000 },
   { month: 'Dec', revenue: 4800 },
-];
+]
 
 module.exports = {
   users,
   customers,
   invoices,
   revenue,
-};
+}
