@@ -5,11 +5,14 @@ import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
+  PencilIcon,
+  PlusIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { Button } from '@/app/ui/button'
+import { Button, DaisyButton } from '@/app/ui/button'
 import { updateInvoice } from '@/app/lib/actions'
+import { useFormState } from 'react-dom'
 
 export default function EditInvoiceForm({
   invoice,
@@ -18,11 +21,12 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm
   customers: CustomerField[]
 }) {
+  const initialState = { message: null, errors: {} }
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id)
+  const [state, dispatch] = useFormState(updateInvoiceWithId, initialState)
   return (
-    <form action={updateInvoice}>
+    <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Invoice ID */}
-        <input type="hidden" name="id" value={invoice.id} />
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
@@ -69,10 +73,10 @@ export default function EditInvoiceForm({
         </div>
 
         {/* Invoice Status */}
-        <div>
-          <label htmlFor="status" className="mb-2 block text-sm font-medium">
+        <fieldset>
+          <legend className="mb-2 block text-sm font-medium">
             Set the invoice status
-          </label>
+          </legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
             <div className="flex gap-4">
               <div className="flex items-center">
@@ -109,16 +113,15 @@ export default function EditInvoiceForm({
               </div>
             </div>
           </div>
-        </div>
+        </fieldset>
       </div>
       <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/invoices"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
+        <Link href="/dashboard/invoices" className="btn normal-case">
           Cancel
         </Link>
-        <Button type="submit">Edit Invoice</Button>
+        <DaisyButton type="submit" icon={'pencil'}>
+          Edit Invoice
+        </DaisyButton>
       </div>
     </form>
   )

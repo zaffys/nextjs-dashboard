@@ -7,13 +7,12 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline'
 import { ArrowRightIcon } from '@heroicons/react/20/solid'
-import { Button } from './button'
+import { Button, DaisyButton } from './button'
 import { useFormState, useFormStatus } from 'react-dom'
 import { authenticate } from '@/app/lib/actions'
 
 export default function LoginForm() {
   const [code, action] = useFormState(authenticate, undefined)
-  const { pending } = useFormStatus()
 
   return (
     <form action={action} className="space-y-3">
@@ -31,7 +30,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block input w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 name="email"
@@ -50,7 +49,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full input rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
                 type="password"
                 name="password"
@@ -62,7 +61,9 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <LoginButton />
+        <DaisyButton type="submit" className="mt-4 w-full" icon={'right'}>
+          Log in
+        </DaisyButton>
         <div className="flex h-8 items-end space-x-1">
           {code === 'CredentialSignin' && (
             <>

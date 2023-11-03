@@ -1,7 +1,6 @@
 import { generateYAxis } from '@/app/lib/utils'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { lusitana } from '@/app/ui/fonts'
-import { Revenue } from '@/app/lib/definitions'
 import { fetchRevenue } from '@/app/lib/data'
 
 // This component is representational only.
@@ -11,9 +10,9 @@ import { fetchRevenue } from '@/app/lib/data'
 // https://airbnb.io/visx/
 
 export default async function RevenueChart() {
-  const revenue: Revenue[] = await fetchRevenue()
+  const revenue = await fetchRevenue()
   const chartHeight = 350
-  const { yAxisLabels, topLabel } = generateYAxis(revenue)
+    const { yAxisLabels, topLabel } = generateYAxis(revenue)
 
   if (!revenue || revenue.length === 0) {
     return <p className="mt-4 text-gray-400">No data available.</p>
@@ -38,9 +37,8 @@ export default async function RevenueChart() {
             ))}
           </div>
 
-          {Object.values(revenue).map((month) => (
+          {revenue.map((month) => (
             <div key={month.month} className="flex flex-col items-center gap-2">
-              {/* bars */}
               <div
                 className="w-full rounded-md bg-blue-300"
                 style={{

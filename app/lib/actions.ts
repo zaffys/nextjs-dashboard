@@ -6,6 +6,16 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { signIn } from '@/auth'
 
+// This is temporary until @types/react-dom is updated
+export type State = {
+  errors?: {
+    customerId?: string[]
+    amount?: string[]
+    status?: string[]
+  }
+  message?: string | null
+}
+
 const InvoiceSchema = z.object({
   id: z.string(),
   customerId: z.string({
@@ -20,21 +30,8 @@ const InvoiceSchema = z.object({
   date: z.string(),
 })
 
-// Use Zod to update the expected types
 const CreateInvoice = InvoiceSchema.omit({ id: true, date: true })
-const UpdateInvoice = InvoiceSchema.omit({ date: true })
-const DeleteInvoice = InvoiceSchema.pick({ id: true })
-
-// This is temporary until @types/react-dom is updated
-export type State = {
-  errors?: {
-    customerId?: string[]
-    amount?: string[]
-    status?: string[]
-  }
-  message?: string | null
-}
-
+const UpdateInvoice = InvoiceSchema.omit({ id: true, date: true })
 export async function createInvoice(prevState: State, formData: FormData) {
   // Validate form using Zod
   const validatedFields = CreateInvoice.safeParse({
@@ -59,9 +56,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
   // Insert data into the database
   try {
     await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `
+        INSERT INTO invoices (customer_id, amount, status, date)
+        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+      `
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
@@ -73,15 +70,25 @@ export async function createInvoice(prevState: State, formData: FormData) {
   revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
 }
-
-export async function updateInvoice(formData: FormData) {
-  const { id, customerId, amount, status } = UpdateInvoice.parse({
-    id: formData.get('id'),
+export async function updateInvoice(
+  id: string,
+  prevState: State,
+  formData: FormData
+) {
+  const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   })
 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    }
+  }
+
+  const { customerId, amount, status } = validatedFields.data
   const amountInCents = amount * 100
 
   try {
@@ -98,14 +105,7 @@ export async function updateInvoice(formData: FormData) {
   redirect('/dashboard/invoices')
 }
 
-export async function deleteInvoice(formData: FormData) {
-  throw new Error('Failed to Delete Invoice')
-
-  // Unreachable code block
-  const { id } = DeleteInvoice.parse({
-    id: formData.get('id'),
-  })
-
+export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`
     revalidatePath('/dashboard/invoices')

@@ -2,17 +2,22 @@ import Breadcrumbs from '@/app/ui/invoices/breadcrumbs'
 import Form from '@/app/ui/invoices/edit-form'
 import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Edit Invoice',
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
-  
   const id = params.id
-  const invoice = await fetchInvoiceById(id)
-  const customers = await fetchCustomers()
+  const [invoice, customers] = await Promise.all([
+    fetchInvoiceById(id),
+    fetchCustomers(),
+  ])
 
   if (!invoice) {
-    notFound();
+    notFound()
   }
-
   return (
     <main>
       <Breadcrumbs
@@ -20,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           { label: 'Invoices', href: '/dashboard/invoices' },
           {
             label: 'Edit Invoice',
-            href: '/dashboard/invoices/${id}/edit',
+            href: `/dashboard/invoices/${id}/edit`,
             active: true,
           },
         ]}
